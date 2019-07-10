@@ -1,0 +1,19 @@
+{
+  "name": "tempper",
+  "version": "0.1.1",
+  "description": "A library to easily create temp dir and inject files. Recommended for test suites.",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "mocha -b --no-diff test/*.js",
+    "coverage": "nyc -r html -r text-summary mocha -b --no-diff test/*.js"
+  },
+  "author": "Guilherme C. Souza",
+  "license": "MIT",
+  "bugs": {
+      "url": "https://gitlab.com/GCSBOSS/tempper/issues"
+  },
+  "repository": {
+      "type": "git",
+      "url": "git+https://gitlab.com/GCSBOSS/tempper.git"
+  }
+}
