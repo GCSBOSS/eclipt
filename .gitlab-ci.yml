@@ -1,0 +1,49 @@
+stages:
+  - test
+  - deploy
+
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
+  - template: Code-Quality.gitlab-ci.yml
+
+sast:
+  variables:
+    SAST_EXCLUDED_PATHS: test/**
+
+# Lint js files
+lint-js:
+ image: node
+ stage: test
+ tags:
+   - docker
+ script:
+   - npm install -g eslint
+   - eslint --ignore-pattern "**/*.min.js" $CI_PROJECT_DIR
+
+# Performs unit testing
+unit-test:
+  coverage: '/Statements\s*:\s*(\d+(?:\.\d+)?\%)/'
+  image: registry.gitlab.com/gcsboss/docker-mocha-nyc:0.1.0-alpine
+  stage: test
+  artifacts:
+    paths: [coverage]
+  tags:
+    - docker
+  script:
+    - npm i --no-optional .
+    - npm run-script coverage
+
+# Publish package to NPM
+publish:
+  stage: deploy
+  image: node
+  tags:
+    - docker
+  only:
+    - tags
+    - triggers
+  script:
+    - npm install -g npm-cli-login
+    - npm-cli-login
+    - npm publish

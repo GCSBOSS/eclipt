@@ -1,0 +1,19 @@
+{
+  "name": "eclipt",
+  "version": "0.1.0",
+  "description": "A complete library to develop complete CLI programs.",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "mocha -b --no-diff test/*.js",
+    "coverage": "nyc -r html -r text-summary mocha -b --no-diff test/*.js"
+  },
+  "author": "Guilherme C. Souza",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/GCSBOSS/eclipt/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/GCSBOSS/eclipt.git"
+  }
+}
