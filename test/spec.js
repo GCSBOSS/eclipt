@@ -24,7 +24,7 @@ describe('Eclipt', () => {
 
             it('Should fail when option argument is not given', () => {
                 let cli = new CLI('my-tool', { opt1: [ false, 'foo', 'thing1' ] });
-                assert.throws( () => cli.execute([ 'foo', '--opt1' ]), /Missing required/ );
+                assert.throws( () => cli.execute([ 'foo', '--opt1' ]), /Missing value/ );
             });
 
             it('Should parse global options', () => {
