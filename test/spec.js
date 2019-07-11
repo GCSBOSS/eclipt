@@ -35,6 +35,22 @@ describe('Eclipt', () => {
                 assert.strictEqual(input.args[0], 'arg2');
             });
 
+            it('Should parse short options', () => {
+                let cli = new CLI('my-tool', { opt1: [ 'o', 'foo', 'thing1' ], opt2: [ false, 'foo' ] });
+                let input = cli.execute([ 'foo', '-o', 'arg1', '--opt2', 'arg2' ]);
+                assert.strictEqual(input.data['opt1'], 'arg1');
+                assert.strictEqual(input.data['opt2'], true);
+                assert.strictEqual(input.args[0], 'arg2');
+            });
+
+            it('Should parse grouped short options', () => {
+                let cli = new CLI('my-tool', { opt1: [ 'o', 'foo' ], opt2: [ 'f', 'foo' ] });
+                let input = cli.execute([ 'foo', '-of', 'arg2' ]);
+                assert.strictEqual(input.data['opt1'], true);
+                assert.strictEqual(input.data['opt2'], true);
+                assert.strictEqual(input.args[0], 'arg2');
+            });
+
         });
 
         describe('Commands', () => {
