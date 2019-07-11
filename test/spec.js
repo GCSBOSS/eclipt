@@ -1,162 +1,58 @@
 const assert = require('assert');
-const fs = require('fs');
 
-const CLI = require('../lib/main.js');
-
-let cli = new CLI('my-tool', {
-    'opt-1': [ false, 'Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla', 'argDesc', 'default' ],
-    'flag-1': [ 'f', 'Usage text bla bla' ]
-});
-
-cli.setCommand('doit', {
-    summary: 'Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla',
-    options: {
-        'opt-2': [ false, 'Usage text bla bla', 'argDesc', 'default2' ]
-    },
-    callback: function(data){
-        console.log(data);
-    }
-})
-
-let data = cli.execute([ 'nodecaf', '--opt-1', 'value', '-f', 'doit', '--opt-2', '--', 'arg1', 'arg2' ]);
-
-cli.displayHelp();
-
-//console.log(data);
-
-console.log(cli.shorthands);
-
-
-describe.skip('Tempper', () => {
+describe('Eclipt', () => {
+    const CLI = require('../lib/main.js');
 
     describe('constructor', () => {
 
-        it('Should create a directory in the system temp folder', () => {
-            let t = new Tempper();
-            assert(fs.existsSync(t.dir));
-            process.chdir(__dirname);
-            fs.rmdirSync(t.dir);
-        });
-
-        it('Should change to the newly created directory', () => {
-            let t = new Tempper();
-            assert.strictEqual(process.cwd(), t.dir);
-            process.chdir(__dirname);
-            fs.rmdirSync(t.dir);
-        });
-
-        it('Should store the old directory name', () => {
-            let od = process.cwd();
-            let t = new Tempper();
-            assert.strictEqual(od, t.oldDir);
-            process.chdir(__dirname);
-            fs.rmdirSync(t.dir);
-        });
-
     });
 
-    describe('::clear', () => {
+    describe('::execute', () => {
 
-        it('Should create a directory in the system temp folder', () => {
-            let t = new Tempper();
-            let d = t.dir;
-            t.clear();
-            assert(!t.dir);
-            assert(!fs.existsSync(d));
-            t.clear();
+        it('Should parse regular arguments when no options were specified', () => {
+            let cli = new CLI('my-tool');
+            let input = cli.execute([ 'foo', '--', '-n', '--fake-opt', 'fakearg', 'arg1' ]);
+            assert.strictEqual(input.args.length, 4);
         });
 
-    });
+        describe('Options', () => {
 
-    describe('::addFile', () => {
+            it('Should fail when given option is not specified', () => {
+                let cli = new CLI('my-tool', { opt1: [ false, 'foo', 'thing1' ] });
+                assert.throws( () => cli.execute([ 'foo', '--opt2', 'arg2' ]), /Unknown option/ );
+            });
 
-        it('Should copy the file from old location to new one', () => {
-            process.chdir('./res');
-            let t = new Tempper();
-            t.addFile('file.txt', './file.txt');
-            assert(fs.existsSync(t.dir + '/file.txt'));
-            t.clear();
+            it('Should fail when option argument is not given', () => {
+                let cli = new CLI('my-tool', { opt1: [ false, 'foo', 'thing1' ] });
+                assert.throws( () => cli.execute([ 'foo', '--opt1' ]), /Missing required/ );
+            });
+
+            it('Should parse global options', () => {
+                let cli = new CLI('my-tool', { opt1: [ false, 'foo', 'thing1' ], opt2: [ false, 'foo' ] });
+                let input = cli.execute([ 'foo', '--opt1', 'arg1', '--opt2', 'arg2' ]);
+                assert.strictEqual(input.data['opt1'], 'arg1');
+                assert.strictEqual(input.data['opt2'], true);
+                assert.strictEqual(input.args[0], 'arg2');
+            });
+
         });
 
-        it('Should fail when temp not started', () => {
-            let t = new Tempper();
-            t.clear();
-            assert.throws( () => t.addFile('file.txt', './file.txt'), /not started/);
-        });
+        describe('Commands', () => {
 
-    });
+            it('Should parse command options', () => {
+                let cli = new CLI('my-tool');
+                cli.setCommand('my-cmd', { options: { opt1: [ false, 'foo', 'thing1' ], opt2: [ false, 'foo' ] } });
+                let input = cli.execute([ 'foo', 'my-cmd', '--opt1', 'arg1', '--opt2', 'arg2' ]);
+                assert.strictEqual(input.data['opt1'], 'arg1');
+                assert.strictEqual(input.data['opt2'], true);
+                assert.strictEqual(input.args[0], 'arg2');
+            });
 
-    describe('::assertExists', () => {
+            it('Should fail when given command doesn\'t exist [requireCommand]', () => {
+                let cli = new CLI('my-tool', {}, { requireCommand: true });
+                assert.throws( () => cli.execute([ 'foo', 'fake-command' ]), /Unknown command/ );
+            });
 
-        it('Should throw when path doesn\'t exist', () => {
-            let t = new Tempper();
-            t.addFile('file.txt', './file.txt');
-            assert.throws( () => t.assertExists('file-WRONG.txt') );
-            assert.doesNotThrow( () => t.assertExists('file.txt') );
-            t.clear();
-        });
-
-    });
-
-    describe('::assertMissing', () => {
-
-        it('Should throw when path exists', () => {
-            let t = new Tempper();
-            t.addFile('file.txt', './file.txt');
-            assert.doesNotThrow( () => t.assertMissing('file-WRONG.txt') );
-            assert.throws( () => t.assertMissing('file.txt') );
-            t.clear();
-        });
-
-    });
-
-    describe('::mkdir', () => {
-
-        it('Should create an empty dir inside the tmp dir', () => {
-            let t = new Tempper();
-            t.mkdir('my-test');
-            t.assertExists('my-test');
-            t.clear();
-        });
-
-        it('Should create an empty dir recursively', () => {
-            let t = new Tempper();
-            t.mkdir('my-test/my-super-test');
-            t.assertExists('my-test/my-super-test');
-            t.clear();
-        });
-
-    });
-
-    describe('::rm', () => {
-
-        it('Should remove an existing diretory', () => {
-            let t = new Tempper();
-            t.mkdir('my-test/foo');
-            t.rm('my-test')
-            t.assertMissing('my-test/foo');
-            t.clear();
-        });
-
-        it('Should remove an existing file', () => {
-            let t = new Tempper();
-            t.addFile('file.txt', './file.txt');
-            t.rm('file.txt')
-            t.assertMissing('file.txt');
-            t.clear();
-        });
-
-    });
-
-    describe('::refresh', () => {
-
-        it('Should return you a new clean tmp dir', () => {
-            let t = new Tempper();
-            t.addFile('file.txt', './file.txt');
-
-            t.refresh();
-            assert(!fs.existsSync(t.dir + '/file.txt'));
-            t.clear();
         });
 
     });

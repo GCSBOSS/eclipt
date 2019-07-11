@@ -1,7 +1,7 @@
 {
-  "name": "tempper",
-  "version": "0.1.1",
-  "description": "A library to easily create temp dir and inject files. Recommended for test suites.",
+  "name": "eclipt",
+  "version": "0.0.0",
+  "description": "",
   "main": "lib/main.js",
   "scripts": {
     "test": "mocha -b --no-diff test/*.js",
@@ -10,10 +10,10 @@
   "author": "Guilherme C. Souza",
   "license": "MIT",
   "bugs": {
-      "url": "https://gitlab.com/GCSBOSS/tempper/issues"
+    "url": "https://gitlab.com/GCSBOSS/eclipt/issues"
   },
   "repository": {
-      "type": "git",
-      "url": "git+https://gitlab.com/GCSBOSS/tempper.git"
+    "type": "git",
+    "url": "git+https://gitlab.com/GCSBOSS/eclipt.git"
   }
 }
