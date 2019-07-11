@@ -1,17 +1,20 @@
 const assert = require('assert');
 const fs = require('fs');
 
-//const Tempper = require('../lib/main.js');
 const CLI = require('../lib/main.js');
 
 let cli = new CLI({
-    'opt-1': [ false, 'Usage text bla bla', 'string', 'default' ],
+    'opt-1': [ false, 'Usage text bla bla', 'argDesc', 'default' ],
     'flag-1': [ false, 'Usage text bla bla' ]
 });
 
-cli.setCommands({
-    'doit': {
-        'flag-2': [ false, 'Usage text bla bla', 'string', 'default2' ]
+cli.setCommand('doit', {
+    description: 'blablabla',
+    options: {
+        'flag-2': [ false, 'Usage text bla bla', 'argDesc', 'default2' ]
+    },
+    callback: function(data){
+        console.log(data);
     }
 })
 
