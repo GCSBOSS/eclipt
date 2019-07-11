@@ -3,26 +3,28 @@ const fs = require('fs');
 
 const CLI = require('../lib/main.js');
 
-let cli = new CLI({
-    'opt-1': [ false, 'Usage text bla bla', 'argDesc', 'default' ],
-    'flag-1': [ false, 'Usage text bla bla' ]
+let cli = new CLI('my-tool', {
+    'opt-1': [ false, 'Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla', 'argDesc', 'default' ],
+    'flag-1': [ 'f', 'Usage text bla bla' ]
 });
 
 cli.setCommand('doit', {
-    description: 'blablabla',
+    summary: 'Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla Usage text bla bla',
     options: {
-        'flag-2': [ false, 'Usage text bla bla', 'argDesc', 'default2' ]
+        'opt-2': [ false, 'Usage text bla bla', 'argDesc', 'default2' ]
     },
     callback: function(data){
         console.log(data);
     }
 })
 
-let data = cli.execute([ 'nodecaf', '--opt-1', 'value', '--flag-1', 'doit', '--flag-2', '--', 'arg1', 'arg2' ]);
+let data = cli.execute([ 'nodecaf', '--opt-1', 'value', '-f', 'doit', '--opt-2', '--', 'arg1', 'arg2' ]);
 
+cli.displayHelp();
 
+//console.log(data);
 
-
+console.log(cli.shorthands);
 
 
 describe.skip('Tempper', () => {
