@@ -13,17 +13,17 @@ lint-js:
    - eslint --ignore-pattern "**/*.min.js" $CI_PROJECT_DIR
 
 # Performs unit testing
-unit-test:
-  coverage: '/Statements\s*:\s*(\d+(?:\.\d+)?\%)/'
-  image: registry.gitlab.com/gcsboss/docker-mocha-nyc:0.1.0-alpine
-  stage: test
-  artifacts:
-    paths: [coverage]
-  tags:
-    - docker
-  script:
-    - npm i --no-optional .
-    - npm run-script coverage
+# unit-test:
+#   coverage: '/Statements\s*:\s*(\d+(?:\.\d+)?\%)/'
+#   image: registry.gitlab.com/gcsboss/docker-mocha-nyc:0.1.0-alpine
+#   stage: test
+#   artifacts:
+#     paths: [coverage]
+#   tags:
+#     - docker
+#   script:
+#     - npm i --no-optional .
+#     - npm run-script coverage
 
 # Analyse code quality
 code_quality:
@@ -45,15 +45,15 @@ code_quality:
     paths: [gl-code-quality-report.json]
 
 # Publish package to NPM
-publish:
-  stage: deploy
-  image: node
-  tags:
-    - docker
-  only:
-    - tags
-    - triggers
-  script:
-    - npm install -g npm-cli-login
-    - npm-cli-login
-    - npm publish
+# publish:
+#   stage: deploy
+#   image: node
+#   tags:
+#     - docker
+#   only:
+#     - tags
+#     - triggers
+#   script:
+#     - npm install -g npm-cli-login
+#     - npm-cli-login
+#     - npm publish
