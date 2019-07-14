@@ -3,8 +3,6 @@ const assert = require('assert');
 describe('Eclipt', function(){
     const CLI = require('../lib/main.js');
 
-    this.timeout(0);
-
     describe('General', () => {
 
         it('Should parse regular arguments when no options were specified', () => {
@@ -25,7 +23,7 @@ describe('Eclipt', function(){
 
     describe('Commands', () => {
 
-        it.only('Should parse a specified command', () => {
+        it('Should parse a specified command', () => {
             let cli = new CLI('my-tool');
             cli.setCommand('my-cmd');
             let input = cli.execute([ 'foo', 'my-cmd' ]);
