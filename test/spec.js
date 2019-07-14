@@ -65,6 +65,16 @@ describe('Eclipt', function(){
             assert.strictEqual(input.args[0], 'arg2');
         });
 
+        it('Should output defaults when flag is not sent', () => {
+            let cli = new CLI('my-tool', {
+                opt1: [ false, 'foo', 'thing1', 'foo' ],
+                opt2: [ false, 'foo' ]
+            });
+            let input = cli.execute([ 'foo' ]);
+            assert.strictEqual(input.data['opt1'], 'foo');
+            assert.strictEqual(input.data['opt2'], false);
+        });
+
         it('Should parse short options', () => {
             let cli = new CLI('my-tool', { opt1: [ 'o', 'foo', 'thing1' ], opt2: [ false, 'foo' ] });
             let input = cli.execute([ 'foo', '-o', 'arg1', '--opt2', 'arg2' ]);
@@ -216,4 +226,3 @@ describe('Eclipt', function(){
 });
 
 // TODO allow Define positional args
-// TODO add automatic functionallity to v flag
