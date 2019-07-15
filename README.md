@@ -89,6 +89,7 @@ These are the settings supported by the constructor:
 
 ```js
 {
+    expectedArgs: array, // Names to describe the expect positional arguments
     noArgs: boolean, // Whether positional arguments are supported or not
     requireCommand: boolean, // Whether a command is required or not
     getVersion: aFunction, // Function that retrieves the version for your tool
@@ -102,6 +103,7 @@ You can add commands to your tool with `cli.setCommand` as follows:
 
 ```js
 cli.setCommand(name, { // The command name and settings object
+    expectedArgs: array, // Names to describe the expect positional arguments
     options: options, // The options object for the command
     summary: string, // A brief explanation of the command
     callback: aFunction, // Function to be executed if the command is called

@@ -169,6 +169,17 @@ describe('Eclipt', function(){
             cli.execute([ 'foo', '-h' ]);
         });
 
+        it('Should output positional arguments informations [expectedArgs]', done => {
+            let cli = new CLI('my-tool', {}, {
+                expectedArgs: [ 'my-thing', 'my-thing-2' ],
+                onOutput(data){
+                    assert(/my-thing\ my-thing-2/.test(data));
+                    done();
+                }
+            });
+            cli.execute([ 'foo', '-h' ]);
+        });
+
     });
 
     describe('Help Command', () => {
@@ -198,6 +209,17 @@ describe('Eclipt', function(){
                 done();
             } });
             cli.setCommand('my-cmd', { noArgs: true });
+            cli.execute([ 'foo', 'my-cmd', '-h' ]);
+        });
+
+        it('Should output positional arguments informations [cmd.expectedArgs]', done => {
+            let cli = new CLI('my-tool', {}, {
+                onOutput(data){
+                    assert(/my-thing\ my-thing-2/.test(data));
+                    done();
+                }
+            });
+            cli.setCommand('my-cmd', { expectedArgs: [ 'my-thing', 'my-thing-2' ] });
             cli.execute([ 'foo', 'my-cmd', '-h' ]);
         });
 
