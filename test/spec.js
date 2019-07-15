@@ -37,8 +37,15 @@ describe('Eclipt', function(){
 
         it('Should execute a provided command callback [cmd.callback]', done => {
             let cli = new CLI('my-tool');
-            cli.setCommand('my-cmd', { callback: () => done() });
-            cli.execute([ 'foo', 'my-cmd' ]);
+            cli.setCommand('my-cmd', {
+                options: { opt: [ false, 'stuff', 'value' ] },
+                callback(a, b, c){
+                    assert.strictEqual(b, 'arg1');
+                    assert.strictEqual(c, 'arg2');
+                    done();
+                }
+            });
+            cli.execute([ 'foo', 'my-cmd', '--opt', '1', 'arg1', 'arg2' ]);
         });
 
     });
