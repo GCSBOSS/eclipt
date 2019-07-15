@@ -15,6 +15,7 @@ describe('Eclipt', function(){
 
         it('Should read ARGV when no args array is supplied', () => {
             let cli = new CLI('my-tool');
+            console.log(process.argv);
             let input = cli.execute();
             assert(/\*\.js/.test(input.args.pop()));
         });
