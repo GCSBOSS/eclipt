@@ -2,6 +2,15 @@ stages:
   - test
   - deploy
 
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
+  - template: Code-Quality.gitlab-ci.yml
+
+sast:
+  variables:
+    SAST_EXCLUDED_PATHS: test/**
+
 # Lint js files
 lint-js:
  image: node
@@ -13,47 +22,28 @@ lint-js:
    - eslint --ignore-pattern "**/*.min.js" $CI_PROJECT_DIR
 
 # Performs unit testing
-# unit-test:
-#   coverage: '/Statements\s*:\s*(\d+(?:\.\d+)?\%)/'
-#   image: registry.gitlab.com/gcsboss/docker-mocha-nyc:0.1.0-alpine
-#   stage: test
-#   artifacts:
-#     paths: [coverage]
-#   tags:
-#     - docker
-#   script:
-#     - npm i --no-optional .
-#     - npm run-script coverage
-
-# Analyse code quality
-code_quality:
+unit-test:
+  coverage: '/Statements\s*:\s*(\d+(?:\.\d+)?\%)/'
+  image: registry.gitlab.com/gcsboss/docker-mocha-nyc:0.1.0-alpine
   stage: test
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality" /code
   artifacts:
-    paths: [gl-code-quality-report.json]
+    paths: [coverage]
+  tags:
+    - docker
+  script:
+    - npm i --no-optional .
+    - npm run-script coverage
 
 # Publish package to NPM
-# publish:
-#   stage: deploy
-#   image: node
-#   tags:
-#     - docker
-#   only:
-#     - tags
-#     - triggers
-#   script:
-#     - npm install -g npm-cli-login
-#     - npm-cli-login
-#     - npm publish
+publish:
+  stage: deploy
+  image: node
+  tags:
+    - docker
+  only:
+    - tags
+    - triggers
+  script:
+    - npm install -g npm-cli-login
+    - npm-cli-login
+    - npm publish

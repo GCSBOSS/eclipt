@@ -1,7 +1,7 @@
 {
   "name": "eclipt",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A complete library to develop complete CLI programs.",
   "main": "lib/main.js",
   "scripts": {
     "test": "mocha -b --no-diff test/*.js",
