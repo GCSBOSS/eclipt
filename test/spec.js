@@ -7,32 +7,39 @@ describe('Eclipt', function(){
 
         it('Should parse regular arguments when no options were specified', () => {
             let cli = new CLI('my-tool');
-            let input = cli.execute([ 'foo', '--', '-n', '--fake-opt', 'fakearg', 'arg1' ]);
+            let input = cli.execute([ 'my-tool', '--', '-n', '--fake-opt', 'fakearg', 'arg1' ]);
             assert.strictEqual(input.args.length, 4);
-            input = cli.execute([ 'foo', 'not-cmd' ]);
+            input = cli.execute([ 'my-tool', 'not-cmd' ]);
             assert.strictEqual(input.args.length, 1);
         });
 
         it('Should read ARGV when no args array is supplied', () => {
-            let cli = new CLI('my-tool');
+            let cli = new CLI('test/*.js');
             let input = cli.execute();
-            assert.strictEqual(process.argv.length - 1, input.args.length);
+            assert.strictEqual(process.argv.length, input.args.length);
         });
 
     });
 
     describe('Commands', () => {
 
+        it('Should ignore prepend arguments that are not valid commands', () => {
+            let cli = new CLI('my-tool');
+            cli.setCommand('my-cmd');
+            let input = cli.execute([ 'foo-not-err', 'my-tool', 'my-cmd' ]);
+            assert.strictEqual(input.cmd, 'my-cmd');
+        });
+
         it('Should parse a specified command', () => {
             let cli = new CLI('my-tool');
             cli.setCommand('my-cmd');
-            let input = cli.execute([ 'foo', 'my-cmd' ]);
+            let input = cli.execute([ 'my-tool', 'my-cmd' ]);
             assert.strictEqual(input.cmd, 'my-cmd');
         });
 
         it('Should fail when given command doesn\'t exist [requireCommand]', () => {
             let cli = new CLI('my-tool', {}, { requireCommand: true });
-            assert.throws( () => cli.execute([ 'foo', 'fake-command' ]), /Unknown command/ );
+            assert.throws( () => cli.execute([ 'my-tool', 'fake-command' ]), /Unknown command/ );
         });
 
         it('Should execute a provided command callback [cmd.callback]', done => {
@@ -45,7 +52,7 @@ describe('Eclipt', function(){
                     done();
                 }
             });
-            cli.execute([ 'foo', 'my-cmd', '--opt', '1', 'arg1', 'arg2' ]);
+            cli.execute([ 'my-tool', 'my-cmd', '--opt', '1', 'arg1', 'arg2' ]);
         });
 
     });
@@ -54,19 +61,19 @@ describe('Eclipt', function(){
 
         it('Should fail when given option is not specified', () => {
             let cli = new CLI('my-tool', { opt1: [ false, 'foo', 'thing1' ] });
-            assert.throws( () => cli.execute([ 'foo', '--opt2', 'arg2' ]), /Unknown option/ );
-            assert.throws( () => cli.execute([ 'foo', '-f', 'arg2' ]), /Unknown option/ );
+            assert.throws( () => cli.execute([ 'my-tool', '--opt2', 'arg2' ]), /Unknown option/ );
+            assert.throws( () => cli.execute([ 'my-tool', '-f', 'arg2' ]), /Unknown option/ );
         });
 
         it('Should fail when option argument is not given', () => {
             let cli = new CLI('my-tool', { opt1: [ false, 'foo', 'thing1' ] });
-            assert.throws( () => cli.execute([ 'foo', '--opt1' ]), /Missing value/ );
-            assert.throws( () => cli.execute([ 'foo', '--opt1', '--opt2' ]), /Missing value/ );
+            assert.throws( () => cli.execute([ 'my-tool', '--opt1' ]), /Missing value/ );
+            assert.throws( () => cli.execute([ 'my-tool', '--opt1', '--opt2' ]), /Missing value/ );
         });
 
         it('Should parse global options', () => {
             let cli = new CLI('my-tool', { opt1: [ false, 'foo', 'thing1' ], opt2: [ false, 'foo' ] });
-            let input = cli.execute([ 'foo', '--opt1', 'arg1', '--opt2', 'arg2' ]);
+            let input = cli.execute([ 'my-tool', '--opt1', 'arg1', '--opt2', 'arg2' ]);
             assert.strictEqual(input.data['opt1'], 'arg1');
             assert.strictEqual(input.data['opt2'], true);
             assert.strictEqual(input.args[0], 'arg2');
@@ -77,14 +84,14 @@ describe('Eclipt', function(){
                 opt1: [ false, 'foo', 'thing1', 'foo' ],
                 opt2: [ false, 'foo' ]
             });
-            let input = cli.execute([ 'foo' ]);
+            let input = cli.execute([ 'my-tool' ]);
             assert.strictEqual(input.data['opt1'], 'foo');
             assert.strictEqual(input.data['opt2'], false);
         });
 
         it('Should parse short options', () => {
             let cli = new CLI('my-tool', { opt1: [ 'o', 'foo', 'thing1' ], opt2: [ false, 'foo' ] });
-            let input = cli.execute([ 'foo', '-o', 'arg1', '--opt2', 'arg2' ]);
+            let input = cli.execute([ 'my-tool', '-o', 'arg1', '--opt2', 'arg2' ]);
             assert.strictEqual(input.data['opt1'], 'arg1');
             assert.strictEqual(input.data['opt2'], true);
             assert.strictEqual(input.args[0], 'arg2');
@@ -92,7 +99,7 @@ describe('Eclipt', function(){
 
         it('Should parse grouped short options', () => {
             let cli = new CLI('my-tool', { opt1: [ 'o', 'foo' ], opt2: [ 'f', 'foo' ] });
-            let input = cli.execute([ 'foo', '-of', 'arg2' ]);
+            let input = cli.execute([ 'my-tool', '-of', 'arg2' ]);
             assert.strictEqual(input.data['opt1'], true);
             assert.strictEqual(input.data['opt2'], true);
             assert.strictEqual(input.args[0], 'arg2');
@@ -101,7 +108,7 @@ describe('Eclipt', function(){
         it('Should parse command options', () => {
             let cli = new CLI('my-tool');
             cli.setCommand('my-cmd', { options: { opt1: [ false, 'foo', 'thing1' ], opt2: [ false, 'foo' ] } });
-            let input = cli.execute([ 'foo', 'my-cmd', '--opt1', 'arg1', '--opt2', 'arg2' ]);
+            let input = cli.execute([ 'my-tool', 'my-cmd', '--opt1', 'arg1', '--opt2', 'arg2' ]);
             assert.strictEqual(input.data['opt1'], 'arg1');
             assert.strictEqual(input.data['opt2'], true);
             assert.strictEqual(input.args[0], 'arg2');
@@ -117,7 +124,7 @@ describe('Eclipt', function(){
                 assert(/Options\:/.test(data));
                 done();
             } });
-            cli.execute([ 'foo', '-h' ]);
+            cli.execute([ 'my-tool', '-h' ]);
         });
 
         it('Should output given cli summary', done => {
@@ -125,7 +132,7 @@ describe('Eclipt', function(){
                 assert(/foobarfoo/.test(data));
                 done();
             }, summary: 'foobarfoo' });
-            cli.execute([ 'foo', '-h' ]);
+            cli.execute([ 'my-tool', '-h' ]);
         });
 
         it('Should not output arg placeholder [noArgs]', done => {
@@ -133,7 +140,7 @@ describe('Eclipt', function(){
                 assert(!/ARGS/.test(data));
                 done();
             } });
-            cli.execute([ 'foo', '-h' ]);
+            cli.execute([ 'my-tool', '-h' ]);
         });
 
         it('Should output available commands information', done => {
@@ -145,7 +152,7 @@ describe('Eclipt', function(){
             } });
             cli.setCommand('my-cmd', { summary: 'foobarbaz' });
             cli.setCommand('cmd2', { summary: 'bazbarfoo' });
-            cli.execute([ 'foo', '-h' ]);
+            cli.execute([ 'my-tool', '-h' ]);
         });
 
         it('Should output required command placeholder when command is not rquired [requireCommand]', done => {
@@ -154,7 +161,7 @@ describe('Eclipt', function(){
                 done();
             }, requireCommand: true });
             cli.setCommand('my-cmd', { summary: 'foobarbaz' });
-            cli.execute([ 'foo', '-h' ]);
+            cli.execute([ 'my-tool', '-h' ]);
         });
 
         it('Should output option informations', done => {
@@ -166,7 +173,7 @@ describe('Eclipt', function(){
                 assert(/opt-2.+\<.+rest/.test(data));
                 done();
             } });
-            cli.execute([ 'foo', '-h' ]);
+            cli.execute([ 'my-tool', '-h' ]);
         });
 
         it('Should output positional arguments informations [expectedArgs]', done => {
@@ -177,7 +184,7 @@ describe('Eclipt', function(){
                     done();
                 }
             });
-            cli.execute([ 'foo', '-h' ]);
+            cli.execute([ 'my-tool', '-h' ]);
         });
 
     });
@@ -191,7 +198,7 @@ describe('Eclipt', function(){
                 done();
             } });
             cli.setCommand('my-cmd');
-            cli.execute([ 'foo', 'my-cmd', '-h' ]);
+            cli.execute([ 'my-tool', 'my-cmd', '-h' ]);
         });
 
         it('Should output given command summary', done => {
@@ -200,7 +207,7 @@ describe('Eclipt', function(){
                 done();
             } });
             cli.setCommand('my-cmd', { summary: 'foobarfoo' });
-            cli.execute([ 'foo', 'my-cmd', '-h' ]);
+            cli.execute([ 'my-tool', 'my-cmd', '-h' ]);
         });
 
         it('Should not output arg placeholder [cmd.noArgs]', done => {
@@ -209,7 +216,7 @@ describe('Eclipt', function(){
                 done();
             } });
             cli.setCommand('my-cmd', { noArgs: true });
-            cli.execute([ 'foo', 'my-cmd', '-h' ]);
+            cli.execute([ 'my-tool', 'my-cmd', '-h' ]);
         });
 
         it('Should output positional arguments informations [cmd.expectedArgs]', done => {
@@ -220,7 +227,7 @@ describe('Eclipt', function(){
                 }
             });
             cli.setCommand('my-cmd', { expectedArgs: [ 'my-thing', 'my-thing-2' ] });
-            cli.execute([ 'foo', 'my-cmd', '-h' ]);
+            cli.execute([ 'my-tool', 'my-cmd', '-h' ]);
         });
 
     });
