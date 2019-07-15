@@ -1,6 +1,18 @@
 # [Eclipt](https://gitlab.com/GCSBOSS/eclipt)
 
-A complete library to develop complete CLI programs.
+A complete library to quickly develop CLI programs. Check out the features:
+
+- Process ARGV
+- Custom args array
+- Shorthand options (Eg.: -f, -g)
+- Default values for options
+- Flag options (that don't receive any value)
+- Grouped flag shorthands (Eg.: -abc)
+- Commands
+- Help flag and output
+- Version flag to execute custom version output
+- Callback for commands
+- Read modules in a directory as commands
 
 ## Get Started
 

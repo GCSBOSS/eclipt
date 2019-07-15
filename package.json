@@ -1,12 +1,28 @@
 {
   "name": "eclipt",
   "version": "0.1.0",
-  "description": "A complete library to develop complete CLI programs.",
+  "description": "A complete library to quickly develop CLI programs.",
   "main": "lib/main.js",
   "scripts": {
     "test": "mocha -b --no-diff test/*.js",
     "coverage": "nyc -r html -r text-summary mocha -b --no-diff test/*.js"
   },
+  "keywords": [
+      "node",
+      "nodejs",
+      "cli",
+      "options",
+      "commands",
+      "args",
+      "argv",
+      "parse",
+      "flags",
+      "short",
+      "grouped",
+      "pipe",
+      "input",
+      "stdin"
+  ],
   "author": "Guilherme C. Souza",
   "license": "MIT",
   "bugs": {
