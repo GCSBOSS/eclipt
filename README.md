@@ -16,10 +16,12 @@ A complete library to quickly develop CLI programs. Check out the features:
 
 ## Get Started
 
-```js
-const Eclipt = require('../lib/eclipt.js');
+Install with: `npm i -P eclipt`
 
-// The first temp sesison is started automatically here,
+```js
+const Eclipt = require('eclipt');
+
+// The first temp session is started automatically here,
 // A diretory will be creted inside your OS's temp dir.
 let cli = new Eclipt(
     'my-cli-tool', // your tool's command name
