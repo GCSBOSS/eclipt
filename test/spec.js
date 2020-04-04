@@ -44,6 +44,13 @@ describe('Eclipt', function(){
             assert.throws( () => cli.execute([ 'my-tool', 'fake-command' ]), /Unknown command/ );
         });
 
+        it('Should not fail when args are given after command [requireCommand]', () => {
+            let cli = new CLI('my-tool', {}, { requireCommand: true });
+            cli.setCommand('my-cmd', { options: { opt: ['o', 'opt'] } });
+            let input = cli.execute([ 'out', 'path/my-tool.js', 'my-cmd', '--opt', 'arg_arg' ]);
+            assert.strictEqual(input.cmd, 'my-cmd');
+        });
+
         it('Should execute a provided command callback [cmd.callback]', done => {
             let cli = new CLI('my-tool');
             cli.setCommand('my-cmd', {
