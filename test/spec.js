@@ -107,6 +107,14 @@ describe('Eclipt', function(){
             assert.strictEqual(input.args[0], 'arg2');
         });
 
+        it('Should parse array options', () => {
+            let cli = new CLI('my-tool', { opt1: [ 'o', 'foo', 'bar' ], opt2: [ 'f', 'foo', 'baz' ] });
+            let input = cli.execute([ 'my-tool', '-o', '1', '-o', '2', '-o', '3', 'arg2' ]);
+            assert.strictEqual(typeof input.data['opt1'], 'object');
+            assert.strictEqual(input.data['opt1'].length, 3);
+            assert.strictEqual(input.args[0], 'arg2');
+        });
+
         it('Should parse command options', () => {
             let cli = new CLI('my-tool');
             cli.setCommand('my-cmd', { options: { opt1: [ false, 'foo', 'thing1' ], opt2: [ false, 'foo' ] } });
