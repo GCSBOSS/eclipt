@@ -1,5 +1,7 @@
 const assert = require('assert');
 
+process.env.NODE_ENV = 'testing';
+
 describe('Eclipt', function(){
     const CLI = require('../lib/main.js');
 
