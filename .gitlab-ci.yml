@@ -7,6 +7,11 @@ include:
   - template: SAST.gitlab-ci.yml
   - template: Code-Quality.gitlab-ci.yml
 
+# Make quality report downloadable
+code_quality:
+  artifacts:
+    paths: [gl-code-quality-report.json]
+
 sast:
   variables:
     SAST_EXCLUDED_PATHS: test/**

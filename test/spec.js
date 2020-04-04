@@ -1,5 +1,7 @@
 const assert = require('assert');
 
+process.env.NODE_ENV = 'testing';
+
 describe('Eclipt', function(){
     const CLI = require('../lib/main.js');
 
@@ -40,6 +42,13 @@ describe('Eclipt', function(){
         it('Should fail when given command doesn\'t exist [requireCommand]', () => {
             let cli = new CLI('my-tool', {}, { requireCommand: true });
             assert.throws( () => cli.execute([ 'my-tool', 'fake-command' ]), /Unknown command/ );
+        });
+
+        it('Should not fail when args are given after command [requireCommand]', () => {
+            let cli = new CLI('my-tool', {}, { requireCommand: true });
+            cli.setCommand('my-cmd', { options: { opt: ['o', 'opt'] } });
+            let input = cli.execute([ 'out', 'path/my-tool.js', 'my-cmd', '--opt', 'arg_arg' ]);
+            assert.strictEqual(input.cmd, 'my-cmd');
         });
 
         it('Should execute a provided command callback [cmd.callback]', done => {
@@ -102,6 +111,14 @@ describe('Eclipt', function(){
             let input = cli.execute([ 'my-tool', '-of', 'arg2' ]);
             assert.strictEqual(input.data['opt1'], true);
             assert.strictEqual(input.data['opt2'], true);
+            assert.strictEqual(input.args[0], 'arg2');
+        });
+
+        it('Should parse array options', () => {
+            let cli = new CLI('my-tool', { opt1: [ 'o', 'foo', 'bar' ], opt2: [ 'f', 'foo', 'baz' ] });
+            let input = cli.execute([ 'my-tool', '-o', '1', '-o', '2', '-o', '3', 'arg2' ]);
+            assert.strictEqual(typeof input.data['opt1'], 'object');
+            assert.strictEqual(input.data['opt1'].length, 3);
             assert.strictEqual(input.args[0], 'arg2');
         });
 

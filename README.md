@@ -5,6 +5,7 @@ A complete library to quickly develop CLI programs. Check out the features:
 - Process ARGV
 - Custom args array
 - Shorthand options (Eg.: -f, -g)
+- Array options (Eg.: -a foo -a bar)
 - Default values for options
 - Flag options (that don't receive any value)
 - Grouped flag shorthands (Eg.: -abc)
