@@ -51,6 +51,13 @@ describe('Eclipt', function(){
             assert.strictEqual(input.cmd, 'my-cmd');
         });
 
+        it('Should not fail when args are given after command with no options [requireCommand]', () => {
+            let cli = new CLI('my-tool', {}, { requireCommand: true });
+            cli.setCommand('my-cmd');
+            let input = cli.execute([ 'out', 'path/my-tool.js', 'my-cmd', 'arg_arg' ]);
+            assert.strictEqual(input.cmd, 'my-cmd');
+        });
+
         it('Should execute a provided command callback [cmd.callback]', done => {
             let cli = new CLI('my-tool');
             cli.setCommand('my-cmd', {
