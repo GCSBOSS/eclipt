@@ -1,6 +1,6 @@
 {
   "name": "eclipt",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A complete library to quickly develop CLI programs.",
   "main": "lib/main.js",
   "scripts": {
