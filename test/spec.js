@@ -277,6 +277,8 @@ describe('Eclipt', function(){
             let cli = new CLI('my-tool');
             cli.requireCommands('./test/res/cmds');
             assert.strictEqual(Object.keys(cli.commands).length, 2);
+            cli.execute(['my-tool', 'bar']);
+            cli.execute(['my-tool', 'foo']);
             assert.strictEqual(cli.commands.bar.test, 'barbazfoo');
             assert.strictEqual(cli.commands.foo.test, 'foobarbaz');
         });
