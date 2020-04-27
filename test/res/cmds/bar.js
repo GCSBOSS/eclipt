@@ -1,3 +1,4 @@
 module.exports = {
-    test: 'barbazfoo'
+    test: 'barbazfoo',
+    summary: 'barium'
 }

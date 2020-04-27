@@ -170,11 +170,11 @@ describe('Eclipt', function(){
         it('Should output available commands information', done => {
             let cli = new CLI('my-tool', {}, { onOutput(data){
                 assert(/\[COMMAND\]/.test(data));
-                assert(/my\-cmd\s+foobarbaz/.test(data));
+                assert(/my\-cmd/.test(data));
                 assert(/cmd2\s+bazbarfoo/.test(data));
                 done();
             } });
-            cli.setCommand('my-cmd', { summary: 'foobarbaz' });
+            cli.setCommand('my-cmd', { });
             cli.setCommand('cmd2', { summary: 'bazbarfoo' });
             cli.execute([ 'my-tool', '-h' ]);
         });
@@ -281,6 +281,13 @@ describe('Eclipt', function(){
             cli.execute(['my-tool', 'foo']);
             assert.strictEqual(cli.commands.bar.test, 'barbazfoo');
             assert.strictEqual(cli.commands.foo.test, 'foobarbaz');
+        });
+
+        it('Should load all command modules on help call', () => {
+            let cli = new CLI('my-tool');
+            cli.requireCommands('./test/res/cmds');
+            assert.strictEqual(Object.keys(cli.commands).length, 2);
+            assert.doesNotThrow(() => cli.execute(['my-tool', '-h']));
         });
 
     });
